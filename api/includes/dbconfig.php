@@ -3,7 +3,7 @@
 	// Our database connection vars
 
 	$datahost = "localhost";
-	$database = ""; // Nothing yet! We need to design it.
+	$database = "52cardshuffle";
 
 	$username = "root";
 	$password = "";
