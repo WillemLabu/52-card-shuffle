@@ -10,46 +10,84 @@
 		's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13'
 	];
 
-	// Shuffle the deck
-	shuffle($cards);
+If (!isset($_GET['guid'])) {
 
-	// Create a new GUID
-	$guid = GUID();
+    // Shuffle the deck
+    shuffle($cards);
 
-	// Insert the values into the db
-	$db = dbConnect();
+    // Create a new GUID
+    $guid = GUID();
 
-	$sql = "INSERT INTO decks (guid, deck)
+    // Insert the values into the db
+    $db = dbConnect();
+
+    $sql = "INSERT INTO decks (guid, deck)
 				 VALUES      (:guid,:deck)";
 
-	$statement = $db->prepare($sql);
+    $statement = $db->prepare($sql);
 
-	// And populate the placeholder(s)
-	$statement->execute(
-		array(
-			':guid' => $guid,
-			':deck' => implode(',', $cards)
-		)
-	);
+    // And populate the placeholder(s)
+    $statement->execute(
+        array(
+            ':guid' => $guid,
+            ':deck' => implode(',' , $cards)
+        )
+    );
 
-	// Close the connection!
-	$db = $statement = null;
-
-
-	// Nice response
-	$response = new Response();
-
-	// Create an object holding everything
-	$body = (object) array(
-		'id'   => $guid,
-		'deck' => $cards
-	);
+    // Close the connection!
+    $db = $statement = null;
 
 
-	$response->code = 200;
-	$response->status = "success";
-	$response->body = $body;
+    // Nice response
+    $response = new Response();
+
+    // Create an object holding everything
+    $body = (object) array(
+        'id'   => $guid,
+        'deck' => $cards
+    );
 
 
-	header("Content-Type: application/json");
-	echo json_encode($response);
+    $response->code = 200;
+    $response->status = "success";
+    $response->body = $body;
+
+
+    header("Content-Type: application/json");
+    echo json_encode($response);
+
+
+} elseif (isset($_GET['guid'])) {
+
+    $guid = $_GET['guid'];
+
+    echo $guid;
+
+    // Insert the values into the db
+    $db = dbConnect();
+
+   /// prepare the select option
+    $sql = 'SELECT name, guid, deck
+             FROM decks
+             WHERE guid = :guid';
+
+    $statement = $db->prepare($sql);
+
+    $statement->execute(array ('guid' => $guid));
+
+    $statement->fetchAll();
+
+
+    echo '<pre>' ,  print_r($statement)   , '</pre>';
+
+
+
+
+
+}
+
+
+
+/// append the url to and fetch the array in the same id
+
+# http://localhost/php-class/52-card-shuffle/api/shuffle/ test
