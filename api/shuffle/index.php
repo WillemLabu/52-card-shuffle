@@ -10,7 +10,6 @@ $cards = [
     's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13'
 ];
 
-If (!isset($_GET['id'])) {
 
     // Shuffle the deck
     shuffle($cards);
@@ -56,44 +55,6 @@ If (!isset($_GET['id'])) {
     header("Content-Type: application/json");
     echo json_encode($response);
 
-
-} elseif (isset($_GET['id'])) {
-
-    $id = $_GET['id'];
-
-    $sql = "SELECT * FROM decks WHERE guid = '$id'";
-    // Let's connect to the database
-    $db = dbConnect();
-    // Then, prepare the statement to run..
-    $statement = $db->prepare($sql);
-    // execute the prepared statement
-    $statement->execute();
-    // Go get the data.
-    $data = $statement->fetchall(PDO::FETCH_ASSOC);
-    //  echo '<pre>', print_r($data) ,'</pre>';
-    // Close the connection!
-    $db = $statement = null;
-
-    // Make the deck from string into array to shuffle again
-    $deck = explode(',', $data[0]['deck']);
-    shuffle($deck);
-    // echo '<pre>', print_r($deck) ,'</pre>';
-    // Nice response
-    $response = new Response();
-
-    // Create an object holding everything
-    $body = (object)array(
-        'id' => $guid,
-        'deck' => $deck
-    );
-    $response->code = 200;
-    $response->status = "success";
-    $response->body = $body;
-
-    header("Content-Type: application/json");
-    echo json_encode($response);
-
-}
 
 
 
