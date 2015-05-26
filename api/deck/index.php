@@ -15,6 +15,7 @@
         $resp->status = "error";
         $resp->body = "Please supply a valid ID.";
 
+        header("Content-Type: application/json");
         die (json_encode($resp));
 
     }
@@ -55,6 +56,7 @@
         $resp->status = "error";
         $resp->body = "NO deck was found with that ID.";
 
+        header("Content-Type: application/json");
         die (json_encode($resp));
 
     }
