@@ -10,6 +10,7 @@ $cards = [
     's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13'
 ];
 
+If (!isset($_GET['id'])) {
 
     // Shuffle the deck
     shuffle($cards);
@@ -55,6 +56,89 @@ $cards = [
     header("Content-Type: application/json");
     echo json_encode($response);
 
+
+} elseif (isset($_GET['id'])) {
+
+    $id = $_GET['id'];
+
+    // Create some SQL to check if guid is there
+        $sql = "SELECT * FROM decks WHERE guid = :id";
+
+    // Let's connect to the database
+        $db = dbConnect();
+
+    // Then, prepare the statement to run..
+        $statement = $db->prepare($sql);
+
+    // execute the prepared statement
+        $statement->execute(array(':id' => $id));
+
+    // Go get the data.
+
+    // This returns an array of all rows that match
+    //  even if only one row does.
+    // $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    // This returns a proper 1 level array
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
+
+    // Close the connection!
+        $db = $statement = null;
+
+        if (!$data) {
+
+            $resp = new Response();
+
+            $resp->code = 404;
+            $resp->status = "error";
+            $resp->body = "That is not a valid Guid ID.";
+
+            die (json_encode($resp));
+
+        }
+
+    $deck = explode(',', $data['deck']);
+    shuffle($deck);
+
+    $sql = "UPDATE decks SET deck = :newDeck WHERE guid = :guid";
+    //echo '<br>'.$sql;
+
+    // Let's connect to the database
+        $db = dbConnect();
+
+    // Then, prepare the statement to run..
+        $statement = $db->prepare($sql);
+
+    // execute the prepared statement
+        $hasupdated = $statement->execute(array(
+                        ':guid' => $id,
+                        ':newDeck' => implode(',', $deck)
+        ));
+
+        if ($hasupdated == FALSE ) {
+
+            $resp = new Response();
+
+            $resp->code = 404;
+            $resp->status = "error";
+            $resp->body = "NO UPDATE WAS MADE";
+
+            die (json_encode($resp));
+
+        } else {
+
+
+            $resp = new Response();
+
+            $resp->code = 200;
+            $resp->status = "success";
+            $resp->body = "The new deck has been updated";
+
+            die (json_encode($resp));
+
+        }
+
+}
 
 
 
