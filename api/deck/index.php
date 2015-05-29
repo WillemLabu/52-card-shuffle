@@ -1,6 +1,5 @@
 <?php
 
-    include "../includes/functions.php";
 
     // Get the id if it exists.
     $id = isset($_GET['id']) ? $_GET['id'] : false;
@@ -9,14 +8,10 @@
     //  supply an ID at all.
     if (!$id) {
 
-        $resp = new Response();
-
-        $resp->code = 404;
-        $resp->status = "error";
-        $resp->body = "Please supply a valid ID.";
-
-        header("Content-Type: application/json");
-        die (json_encode($resp));
+        echo '<div class="container">
+                    <h3 class="bg-danger">Please supply an ID! </h3>
+                 </div>
+            ';
 
     }
 
@@ -50,14 +45,10 @@
     // Let's see if anything was returned.
     if (!$data) {
 
-        $resp = new Response();
-
-        $resp->code = 404;
-        $resp->status = "error";
-        $resp->body = "NO deck was found with that ID.";
-
-        header("Content-Type: application/json");
-        die (json_encode($resp));
+        echo '<div class="container">
+                    <h3 class="bg-danger">No Deck was found with that ID! </h3>
+                 </div>
+            ';
 
     }
 
@@ -66,21 +57,19 @@
 
 
     // Re-array-ify the deck we saved as a string
-    $deck = explode(',', $data['deck']);
+    $guid = $data['guid'];
+    $card = $data['deck'];
 
-    // Nice response
-    $response = new Response();
+?>
+<div class="container">
+    <table id="example" class="table table-striped table-bordered table table-hover">
+        <th>Matched Guide</th>
+        <th>Matced Card Deck</th>
+        <tr>
+            <td><?php echo $guid; ?></td>
+            <td><?php echo $card; ?></td>
+        </tr>
+    </table>
+</div>
 
-    // Create an object holding everything
-    $body = (object)array(
-        'id' => $id,
-        'deck' => $deck
-    );
-
-    $response->code = 200;
-    $response->status = "success";
-    $response->body = $body;
-
-    header("Content-Type: application/json");
-    echo json_encode($response);
 
