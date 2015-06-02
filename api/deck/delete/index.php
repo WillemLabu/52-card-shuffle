@@ -1,6 +1,6 @@
 <?php 
 
-include "../../includes/functions.php";
+
 
 
 // Get the id if it exists.
@@ -10,13 +10,10 @@ $id = isset($_GET['id']) ? $_GET['id'] : false;
 
 	if (!$id) {
 
-        $resp = new Response();
-
-        $resp->code = 404;
-        $resp->status = "error";
-        $resp->body = "Please supply a valid ID.";
-
-        die (json_encode($resp));
+        echo '<div class="container">
+                    <h3 class="bg-danger">Incorrect ID provided! </h3>
+                 </div>
+            ';
 
     }
  
@@ -48,13 +45,10 @@ $id = isset($_GET['id']) ? $_GET['id'] : false;
 
     if (!$data) {
 
-        $resp = new Response();
-        $resp->code = 404;
-        $resp->status = "error";
-        $resp->body = "NO deck was found with that ID.";
-
-        die (json_encode($resp));
-
+        echo '<div class="container">
+                    <h3 class="bg-danger">No Item fopund with that ID! </h3>
+                 </div>
+            ';
     }
 
 
@@ -73,15 +67,23 @@ $id = isset($_GET['id']) ? $_GET['id'] : false;
 	// execute the prepared statement REPLACE PLACEHOLDER :id with $id
     $statement->execute(array(':id' => $id));
 
-		$resp = new Response();
+echo '<div class="container">
+                    <h3 class="bg-success">The deck has now been deleted successfully  </h3>
+                 </div>
+            ';
+
+
+
+
+	/*	$resp = new Response();
         $resp->code = 200;
         $resp->status = "SUCCESS";
         $resp->body = "DECK WAS DELETED WITH SUCCESS!";
 
         $db = $statement = null;
 
-        die (json_encode($resp));
-	
+        echo json_encode($response);
+	*/
 
 
 ?>
